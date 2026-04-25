@@ -80,7 +80,8 @@ async def startup():
             
             # Better background data prep for SHAP
             bg_df = df.head(50).copy()
-            if tg in bg_df.columns: bg_df = bg_df.drop(columns=[tg])
+            ignore = [tg.lower(), "person_id", "id", "customer_id", "driver_id"]
+            bg_df = bg_df.drop(columns=[c for c in bg_df.columns if c.lower() in ignore], errors="ignore")
             
             # Ensure numeric columns are numeric and others are dummy encoded
             for c in bg_df.columns:
@@ -149,7 +150,7 @@ async def fields(id: str):
     tg = art["target"].get("target_col")
     out = []
     for c in df.columns:
-        if c == tg: continue
+        if c == tg or c.lower() in ["person_id", "id", "customer_id", "driver_id"]: continue
         t = "number" if pd.api.types.is_numeric_dtype(df[c].dtype) else "select"
         opts = [x for x in df[c].unique().tolist() if pd.notna(x)] if t == "select" else []
         out.append({"name": c, "type": t, "options": clean(opts), "default": ""})
@@ -171,7 +172,8 @@ async def run(id: str, req: PredictRequest):
         raw = req.features
         cols = art["df"].columns
         tg = art["target"].get("target_col")
-        row = {c: raw.get(c, art["df"][c].iloc[0]) for c in cols if c != tg}
+        ignore = [tg.lower(), "person_id", "id", "customer_id", "driver_id"]
+        row = {c: raw.get(c, art["df"][c].iloc[0]) for c in cols if c.lower() not in ignore}
         df = pd.DataFrame([row])
         
         for c in df.columns:

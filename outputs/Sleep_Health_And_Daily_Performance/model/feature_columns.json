@@ -1,5 +1,4 @@
 [
-  "person_id",
   "age",
   "bmi",
   "sleep_duration_hrs",
