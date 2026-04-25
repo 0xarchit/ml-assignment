@@ -153,7 +153,7 @@ elements.inferenceForm.onsubmit = async (e) => {
 function renderResult(data) {
     const scores = Object.entries(data.scores).sort((a, b) => b[1] - a[1]);
     const shap = Object.entries(data.shap || {});
-    const maxShap = Math.max(...shap.map(s => Math.abs(s[1])), 1);
+    const maxShap = Math.max(...shap.map(s => Math.abs(s[1])), 0.001);
 
     elements.resultDisplay.innerHTML = `
         <div class="result-view">
@@ -176,14 +176,15 @@ function renderResult(data) {
             </div>
 
             <div class="shap-chart">
-                <span style="font-size: 0.65rem; color: var(--text-dim); letter-spacing: 4px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">Top Decision Drivers</span>
+                <span style="font-size: 0.65rem; color: var(--text-dim); letter-spacing: 4px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">SHAP Decision Drivers</span>
                 ${shap.map(([feat, val]) => `
                     <div class="shap-row">
-                        <span class="score-label" style="width: 120px;" title="${feat}">${feat}</span>
-                        <div class="shap-bar-container">
-                            <div class="shap-bar-fill ${val >= 0 ? 'positive' : 'negative'}" style="width: 0%"></div>
+                        <span class="score-label" style="font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis;" title="${feat}">${feat}</span>
+                        <div class="shap-viz">
+                            <div class="shap-axis"></div>
+                            <div class="shap-bar ${val >= 0 ? 'positive' : 'negative'}" style="width: 0%"></div>
                         </div>
-                        <span class="score-label" style="text-align: right; width: 40px;">${val >= 0 ? '+' : '-'}${Math.abs(val).toFixed(2)}</span>
+                        <span class="score-label" style="text-align: right; font-weight: 700; color: ${val >= 0 ? '#10b981' : '#ef4444'}">${val >= 0 ? '+' : ''}${val.toFixed(2)}</span>
                     </div>
                 `).join('')}
             </div>
@@ -194,8 +195,11 @@ function renderResult(data) {
         const fills = elements.resultDisplay.querySelectorAll('.bar-fill');
         scores.forEach((s, i) => fills[i].style.width = `${s[1] * 100}%`);
         
-        const shapFills = elements.resultDisplay.querySelectorAll('.shap-bar-fill');
-        shap.forEach((s, i) => shapFills[i].style.width = `${(Math.abs(s[1]) / maxShap) * 100}%`);
+        const shapBars = elements.resultDisplay.querySelectorAll('.shap-bar');
+        shap.forEach((s, i) => {
+            const width = (Math.abs(s[1]) / maxShap) * 50; // Max 50% from center
+            shapBars[i].style.width = `${width}%`;
+        });
     }, 100);
 }
 

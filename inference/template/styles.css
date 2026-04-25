@@ -80,10 +80,11 @@ header {
 .tabs {
     display: flex;
     gap: 12px;
-    justify-content: center;
     overflow-x: auto;
     padding: 10px;
     scrollbar-width: none;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
 }
 
 .tabs::-webkit-scrollbar { display: none; }
@@ -300,41 +301,55 @@ option { background: #0f172a; color: #fff; }
 .shap-chart {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     margin-top: 40px;
     padding-top: 40px;
     border-top: 1px solid var(--border);
 }
 
 .shap-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 100px 1fr 40px;
     align-items: center;
     gap: 15px;
 }
 
-.shap-bar-container {
-    flex: 1;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 100px;
+.shap-viz {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
     position: relative;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
 }
 
-.shap-bar-fill {
+.shap-axis {
+    position: absolute;
+    left: 50%;
+    top: -5px;
+    bottom: -5px;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 1;
+}
+
+.shap-bar {
     height: 100%;
-    border-radius: 100px;
-    transition: width 1s ease-out;
+    position: absolute;
+    transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 2px;
 }
 
-.shap-bar-fill.positive {
+.shap-bar.positive {
+    left: 50%;
     background: #10b981;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
 }
 
-.shap-bar-fill.negative {
+.shap-bar.negative {
+    right: 50%;
     background: #ef4444;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
 
 #modal-overlay {
@@ -420,7 +435,26 @@ option { background: #0f172a; color: #fff; }
     header { flex-direction: row; justify-content: space-between; align-items: center; }
     .logo { align-items: flex-start; }
     .btn-group { flex-direction: row; }
+    .tabs { justify-content: center; }
 }
 
 @keyframes slide-reveal { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes modal-enter { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+@media (max-width: 1024px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .hero { padding: 80px 0 40px; }
+}
+
+@media (max-width: 640px) {
+    body { padding: 15px; }
+    .hero h1 { font-size: 2.5rem; }
+    .spec-grid { grid-template-columns: 1fr; }
+    .modal { width: 95%; margin: 10px; }
+    .modal-header, .modal-content { padding: 20px; }
+    .prediction-box { padding: 30px; }
+    .label-val { font-size: 2.5rem; }
+    .shap-row { flex-direction: column; align-items: flex-start; gap: 5px; }
+    .shap-row .score-label { width: 100% !important; text-align: left !important; }
+    .tab-btn { padding: 10px 20px; font-size: 0.85rem; }
+}
