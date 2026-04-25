@@ -1,0 +1,4 @@
+{
+  "target_col": "PitNextLap",
+  "model_name": "RandomForestClassifier"
+}

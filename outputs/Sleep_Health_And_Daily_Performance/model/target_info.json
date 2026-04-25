@@ -1,0 +1,4 @@
+{
+  "target_col": "sleep_disorder_risk",
+  "model_name": "XGBClassifier"
+}

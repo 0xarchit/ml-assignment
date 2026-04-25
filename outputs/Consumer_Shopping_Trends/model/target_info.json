@@ -1,0 +1,4 @@
+{
+  "target_col": "shopping_preference",
+  "model_name": "LogisticRegression"
+}

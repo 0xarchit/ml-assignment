@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inference Studio | Neural Network Visualizer</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <span class="glitch" data-text="INFERENCE">INFERENCE</span>
+                <span class="studio">STUDIO</span>
+            </div>
+            <nav class="tabs">
+                {% for model in models %}
+                <button class="tab-btn {% if loop.first %}active{% endif %}" data-id="{{ model.id }}">
+                    {{ model.name }}
+                </button>
+                {% endfor %}
+            </nav>
+        </header>
+
+        <main>
+            <section class="viewport">
+                <div class="panel-left">
+                    <div class="card glass">
+                        <div class="card-header">
+                            <h3>Predictive Input</h3>
+                            <button class="info-trigger" title="Model Specifications">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </button>
+                        </div>
+                        <form id="inference-form" class="scrollable">
+                            <div id="fields-container"></div>
+                        </form>
+                        <div class="card-footer">
+                            <div class="btn-group">
+                                <button type="button" id="btn-autofill" class="btn-secondary">
+                                    <span class="btn-text">Auto-Inject Sample</span>
+                                    <span class="btn-icon"><i class="fa-solid fa-flask-vial"></i></span>
+                                </button>
+                                <button type="submit" form="inference-form" class="btn-primary">
+                                    <span class="btn-text">Execute Inference</span>
+                                    <span class="btn-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-right">
+                    <div class="card glass result-card">
+                        <div class="card-header">
+                            <h3>Output Analysis</h3>
+                        </div>
+                        <div id="result-display" class="empty-state">
+                            <div class="neural-loader">
+                                <div class="node"></div>
+                                <div class="node"></div>
+                                <div class="node"></div>
+                            </div>
+                            <p>Awaiting input parameters...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div id="modal-overlay" class="hidden">
+            <div class="modal glass">
+                <div class="modal-header">
+                    <h2 id="modal-title">Model Specs</h2>
+                    <button id="modal-close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-content">
+                    <div id="specs-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
